@@ -63,7 +63,8 @@ async def on_member_join(member):
 
 @client.command()
 async def hello(ctx):
-    await ctx.send(f'Hello {ctx.author.name}!')
+    #await ctx.send(f'Hello {ctx.author.name}!')
+    await ctx.send(F"F'ghoxx il-liba ommok {ctx.author.name}!")
 
 @client.command()
 async def join(ctx):
@@ -81,10 +82,13 @@ async def ping(ctx):
     await ctx.send(f'{ctx.author.name} ping is {round(client.latency * 1000)}ms')
 
 @client.command()
-async def play(self, ctx, *, url):
-    player = await YTDLSource.from_url(url, loop=self.bot.loop)
-    ctx.voice_client.play(player, after=lambda e: print('Player error: %s' % e) if e else None)
+async def play(ctx, *, url):
+
+    async with ctx.typing():
+        player = await YTDLSource.from_url(url, loop=None)
+        ctx.voice_client.play(player, after=lambda e: print('Player error: %s' % e) if e else None)
+
     await ctx.send('Now playing: {}'.format(player.title))
 
 
-client.run('TOKEN')
+client.run('token')
