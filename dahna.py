@@ -5,6 +5,7 @@
 import asyncio
 import discord
 import youtube_dl
+import random
 from discord.ext import commands
 
 # Suppress noise about console usage from errors
@@ -41,7 +42,7 @@ class YTDLSource(discord.PCMVolumeTransformer):
         self.url = data.get('url')
 
     @classmethod
-    async def from_url(cls, url, *, loop=None, stream=False):
+    async def from_url(cls, url, *, loop=None, stream=True):
         loop = loop or asyncio.get_event_loop()
         data = await loop.run_in_executor(None, lambda: ytdl.extract_info(url, download=not stream))
 
@@ -55,7 +56,7 @@ class YTDLSource(discord.PCMVolumeTransformer):
 @client.event
 async def on_ready():
     await client.change_presence(activity=discord.Game('With yo mamma'))
-    print('Dahna.')
+    print('DahnaBot is loaded.')
 
 @client.event
 async def on_member_join(member):
@@ -64,7 +65,7 @@ async def on_member_join(member):
 @client.command()
 async def hello(ctx):
     #await ctx.send(f'Hello {ctx.author.name}!')
-    await ctx.send(F"F'ghoxx il-liba ommok {ctx.author.name}!")
+    await ctx.send(F"F'għoxx il-liba ommok, {ctx.author.name}!")
 
 @client.command()
 async def join(ctx):
@@ -79,16 +80,47 @@ async def leave(ctx):
 
 @client.command()
 async def ping(ctx):
-    await ctx.send(f'{ctx.author.name} ping is {round(client.latency * 1000)}ms')
+    await ctx.send(f'DahnaBots ping is {round(client.latency * 1000)}ms')
 
 @client.command()
 async def play(ctx, *, url):
-
     async with ctx.typing():
         player = await YTDLSource.from_url(url, loop=None)
         ctx.voice_client.play(player, after=lambda e: print('Player error: %s' % e) if e else None)
 
     await ctx.send('Now playing: {}'.format(player.title))
 
+@client.command()
+async def d20(ctx):
+    roll = random.randint(1, 20)
+    await ctx.send(f'{ctx.author.name} threw a d20 and rolled a {roll}.')
+
+@client.command()
+async def d12(ctx):
+    roll = random.randint(1, 12)
+    await ctx.send(f'{ctx.author.name} threw a d12 and rolled a {roll}.')
+
+@client.command()
+async def d6(ctx):
+    roll = random.randint(1, 6)
+    await ctx.send(f'{ctx.author.name} threw a d6 and rolled a {roll}.')
+
+@client.command()
+async def taboo(ctx, *, message):
+    message_cop1 = message.upper()
+    message_cop2 = message_cop1
+    message_cop2 = message_cop2.replace("S","Z")
+    message_cop2 = message_cop2.replace("B","13")
+    message_cop2 = message_cop2.replace("I","1")
+    await ctx.send(f'{message_cop1} | {message_cop2}')
+
+@client.command()
+async def bitconnect(ctx):
+    if ctx.voice_client is not None:
+        await ctx.voice_client.move_to(ctx.author.voice.channel)
+    else:
+        await ctx.author.voice.channel.connect()
+
+    await ctx.voice_client.play(discord.FFmpegPCMAudio('bitconnect.mp3'))
 
 client.run('token')
