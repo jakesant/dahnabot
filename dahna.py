@@ -8,7 +8,7 @@ import youtube_dl
 import random
 from discord.ext import commands
 
-# Suppress noise about console usage from errors
+#Suppress noise about console usage from errors
 youtube_dl.utils.bug_reports_message = lambda: ''
 
 ytdl_format_options = {
@@ -31,6 +31,8 @@ ffmpeg_options = {
 client = commands.Bot(command_prefix = '$')
 
 ytdl = youtube_dl.YoutubeDL(ytdl_format_options)
+
+bitconnect_sounds = ['bitconnect1.mp3', 'bitconnect2.mp3', 'bitconnect3.mp3']
 
 class YTDLSource(discord.PCMVolumeTransformer):
     def __init__(self, source, *, data, volume=0.5):
@@ -121,6 +123,6 @@ async def bitconnect(ctx):
     else:
         await ctx.author.voice.channel.connect()
 
-    await ctx.voice_client.play(discord.FFmpegPCMAudio('bitconnect.mp3'))
+    await ctx.voice_client.play(discord.FFmpegPCMAudio(random.choice(bitconnect_sounds)))
 
 client.run('token')
