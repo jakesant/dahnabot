@@ -66,8 +66,7 @@ async def on_member_join(member):
 
 @client.command()
 async def hello(ctx):
-    #await ctx.send(f'Hello {ctx.author.name}!')
-    await ctx.send(F"F'għoxx il-liba ommok, {ctx.author.name}!")
+    await ctx.send(f'Hello {ctx.author.name}!')
 
 @client.command()
 async def join(ctx):
@@ -124,5 +123,12 @@ async def bitconnect(ctx):
         await ctx.author.voice.channel.connect()
 
     await ctx.voice_client.play(discord.FFmpegPCMAudio(random.choice(bitconnect_sounds)))
+
+@client.command()
+@commands.has_permissions(kick_members=True)
+async def kick(ctx, member : discord.Member, *, reason=None):
+    await ctx.send(f'Going to kick {member}.')
+    await member.kick(reason=reason)
+    await ctx.send(f'User {member} has been kicked.')
 
 client.run('token')
